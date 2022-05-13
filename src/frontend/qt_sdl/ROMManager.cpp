@@ -325,7 +325,7 @@ bool LoadState(std::string filename)
         PreviousSaveFile = NDSSave->GetPath();
 
         std::string savefile = filename.substr(LastSep(filename)+1);
-        savefile = GetAssetPath(false, Config::SaveFilePath, ".sav", savefile);
+        savefile = GetAssetPath(false, Config::SaveFilePath, ".dsv", savefile);
         NDSSave->SetPath(savefile, true);
     }
 
@@ -349,7 +349,7 @@ bool SaveState(std::string filename)
     if (Config::SavestateRelocSRAM && NDSSave)
     {
         std::string savefile = filename.substr(LastSep(filename)+1);
-        savefile = GetAssetPath(false, Config::SaveFilePath, ".sav", savefile);
+        savefile = GetAssetPath(false, Config::SaveFilePath, ".dsv", savefile);
         NDSSave->SetPath(savefile, false);
     }
 
@@ -431,7 +431,7 @@ void Reset()
     if ((CartType != -1) && NDSSave)
     {
         std::string oldsave = NDSSave->GetPath();
-        std::string newsave = GetAssetPath(false, Config::SaveFilePath, ".sav");
+        std::string newsave = GetAssetPath(false, Config::SaveFilePath, ".dsv");
         if (oldsave != newsave)
             NDSSave->SetPath(newsave, false);
     }
@@ -439,7 +439,7 @@ void Reset()
     if ((GBACartType != -1) && GBASave)
     {
         std::string oldsave = GBASave->GetPath();
-        std::string newsave = GetAssetPath(true, Config::SaveFilePath, ".sav");
+        std::string newsave = GetAssetPath(true, Config::SaveFilePath, ".dsv");
         if (oldsave != newsave)
             GBASave->SetPath(newsave, false);
     }
@@ -561,7 +561,7 @@ bool LoadROM(QStringList filepath, bool reset)
     u32 savelen = 0;
     u8* savedata = nullptr;
 
-    std::string savname = GetAssetPath(false, Config::SaveFilePath, ".sav");
+    std::string savname = GetAssetPath(false, Config::SaveFilePath, ".dsv");
     FILE* sav = Platform::OpenFile(savname, "rb", true);
     if (sav)
     {
@@ -710,7 +710,7 @@ bool LoadGBAROM(QStringList filepath)
     u32 savelen = 0;
     u8* savedata = nullptr;
 
-    std::string savname = GetAssetPath(true, Config::SaveFilePath, ".sav");
+    std::string savname = GetAssetPath(true, Config::SaveFilePath, ".dsv");
     FILE* sav = Platform::OpenFile(savname, "rb", true);
     if (sav)
     {
