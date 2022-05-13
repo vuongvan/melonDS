@@ -439,7 +439,7 @@ void Reset()
     if ((GBACartType != -1) && GBASave)
     {
         std::string oldsave = GBASave->GetPath();
-        std::string newsave = GetAssetPath(true, Config::SaveFilePath, ".dsv");
+        std::string newsave = GetAssetPath(true, Config::SaveFilePath, ".sav");
         if (oldsave != newsave)
             GBASave->SetPath(newsave, false);
     }
@@ -710,7 +710,7 @@ bool LoadGBAROM(QStringList filepath)
     u32 savelen = 0;
     u8* savedata = nullptr;
 
-    std::string savname = GetAssetPath(true, Config::SaveFilePath, ".dsv");
+    std::string savname = GetAssetPath(true, Config::SaveFilePath, ".sav");
     FILE* sav = Platform::OpenFile(savname, "rb", true);
     if (sav)
     {
