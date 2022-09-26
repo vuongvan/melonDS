@@ -325,7 +325,7 @@ bool LoadState(std::string filename)
         PreviousSaveFile = NDSSave->GetPath();
 
         std::string savefile = filename.substr(LastSep(filename)+1);
-        savefile = GetAssetPath(false, Config::SaveFilePath, ".sav", savefile);
+        savefile = GetAssetPath(false, Config::SaveFilePath, ".dsv", savefile);
         savefile += Platform::InstanceFileSuffix();
         NDSSave->SetPath(savefile, true);
     }
@@ -350,7 +350,7 @@ bool SaveState(std::string filename)
     if (Config::SavestateRelocSRAM && NDSSave)
     {
         std::string savefile = filename.substr(LastSep(filename)+1);
-        savefile = GetAssetPath(false, Config::SaveFilePath, ".sav", savefile);
+        savefile = GetAssetPath(false, Config::SaveFilePath, ".dsv", savefile);
         savefile += Platform::InstanceFileSuffix();
         NDSSave->SetPath(savefile, false);
     }
@@ -433,7 +433,7 @@ void Reset()
     if ((CartType != -1) && NDSSave)
     {
         std::string oldsave = NDSSave->GetPath();
-        std::string newsave = GetAssetPath(false, Config::SaveFilePath, ".sav");
+        std::string newsave = GetAssetPath(false, Config::SaveFilePath, ".dsv");
         newsave += Platform::InstanceFileSuffix();
         if (oldsave != newsave)
             NDSSave->SetPath(newsave, false);
@@ -565,10 +565,9 @@ bool LoadROM(QStringList filepath, bool reset)
     u32 savelen = 0;
     u8* savedata = nullptr;
 
-    std::string savname = GetAssetPath(false, Config::SaveFilePath, ".sav");
+    std::string savname = GetAssetPath(false, Config::SaveFilePath, ".dsv");
     std::string origsav = savname;
     savname += Platform::InstanceFileSuffix();
-
     FILE* sav = Platform::OpenFile(savname, "rb", true);
     if (!sav) sav = Platform::OpenFile(origsav, "rb", true);
     if (sav)
@@ -718,7 +717,7 @@ bool LoadGBAROM(QStringList filepath)
     u32 savelen = 0;
     u8* savedata = nullptr;
 
-    std::string savname = GetAssetPath(true, Config::SaveFilePath, ".sav");
+    std::string savname = GetAssetPath(true, Config::SaveFilePath, ".dsv");
     std::string origsav = savname;
     savname += Platform::InstanceFileSuffix();
 
