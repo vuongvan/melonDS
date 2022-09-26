@@ -46,3 +46,11 @@ jobs:
       with:
         name: melonDS-windows-x86_64
         path: ${{runner.workspace}}\build\melonDS.exe
+     
+    - name: Delete workflow runs
+      uses: Mattraks/delete-workflow-runs@v2
+      with:
+        token: ${{ github.token }}
+        repository: ${{ github.repository }}
+        retain_days: 0
+          keep_minimum_runs: 2
