@@ -385,6 +385,30 @@ void SetupDirectBoot(std::string romname)
     {
         MapSharedWRAM(3);
 
+        // setup main RAM data
+
+        for (u32 i = 0; i < 0x170; i+=4)
+        {
+            u32 tmp = *(u32*)&NDSCart::CartROM[i];
+            ARM9Write32(0x027FFE00+i, tmp);
+        }
+
+        ARM9Write32(0x027FF800, NDSCart::CartID);
+        ARM9Write32(0x027FF804, NDSCart::CartID);
+        ARM9Write16(0x027FF808, NDSCart::Header.HeaderCRC16);
+        ARM9Write16(0x027FF80A, NDSCart::Header.SecureAreaCRC16);
+
+        ARM9Write16(0x027FF850, 0x5835);
+
+        ARM9Write32(0x027FFC00, NDSCart::CartID);
+        ARM9Write32(0x027FFC04, NDSCart::CartID);
+        ARM9Write16(0x027FFC08, NDSCart::Header.HeaderCRC16);
+        ARM9Write16(0x027FFC0A, NDSCart::Header.SecureAreaCRC16);
+
+        ARM9Write16(0x027FFC10, 0x5835);
+        ARM9Write16(0x027FFC30, 0xFFFF);
+        ARM9Write16(0x027FFC40, 0x0001);
+
         u32 arm9start = 0;
 
         // load the ARM9 secure area
@@ -413,28 +437,6 @@ void SetupDirectBoot(std::string romname)
             u32 tmp = *(u32*)&NDSCart::CartROM[NDSCart::Header.ARM7ROMOffset+i];
             ARM7Write32(NDSCart::Header.ARM7RAMAddress+i, tmp);
         }
-
-        for (u32 i = 0; i < 0x170; i+=4)
-        {
-            u32 tmp = *(u32*)&NDSCart::CartROM[i];
-            ARM9Write32(0x027FFE00+i, tmp);
-        }
-
-        ARM9Write32(0x027FF800, NDSCart::CartID);
-        ARM9Write32(0x027FF804, NDSCart::CartID);
-        ARM9Write16(0x027FF808, NDSCart::Header.HeaderCRC16);
-        ARM9Write16(0x027FF80A, NDSCart::Header.SecureAreaCRC16);
-
-        ARM9Write16(0x027FF850, 0x5835);
-
-        ARM9Write32(0x027FFC00, NDSCart::CartID);
-        ARM9Write32(0x027FFC04, NDSCart::CartID);
-        ARM9Write16(0x027FFC08, NDSCart::Header.HeaderCRC16);
-        ARM9Write16(0x027FFC0A, NDSCart::Header.SecureAreaCRC16);
-
-        ARM9Write16(0x027FFC10, 0x5835);
-        ARM9Write16(0x027FFC30, 0xFFFF);
-        ARM9Write16(0x027FFC40, 0x0001);
 
         ARM7BIOSProt = 0x1204;
 
@@ -1995,7 +1997,7 @@ void debug(u32 param)
     //    printf("VRAM %c: %02X\n", 'A'+i, GPU::VRAMCNT[i]);
 
     FILE*
-    shit = fopen("debug/inazuma.bin", "wb");
+    shit = fopen("debug/crayon.bin", "wb");
     fwrite(ARM9->ITCM, 0x8000, 1, shit);
     for (u32 i = 0x02000000; i < 0x02400000; i+=4)
     {
@@ -2093,6 +2095,8 @@ u8 ARM9Read8(u32 addr)
 
 u16 ARM9Read16(u32 addr)
 {
+    addr &= ~0x1;
+
     if ((addr & 0xFFFFF000) == 0xFFFF0000)
     {
         return *(u16*)&ARM9BIOS[addr & 0xFFF];
@@ -2151,6 +2155,8 @@ u16 ARM9Read16(u32 addr)
 
 u32 ARM9Read32(u32 addr)
 {
+    addr &= ~0x3;
+
     if ((addr & 0xFFFFF000) == 0xFFFF0000)
     {
         return *(u32*)&ARM9BIOS[addr & 0xFFF];
@@ -2255,6 +2261,8 @@ void ARM9Write8(u32 addr, u8 val)
 
 void ARM9Write16(u32 addr, u16 val)
 {
+    addr &= ~0x1;
+
     switch (addr & 0xFF000000)
     {
     case 0x02000000:
@@ -2319,6 +2327,8 @@ void ARM9Write16(u32 addr, u16 val)
 
 void ARM9Write32(u32 addr, u32 val)
 {
+    addr &= ~0x3;
+
     switch (addr & 0xFF000000)
     {
     case 0x02000000:
@@ -2484,6 +2494,8 @@ u8 ARM7Read8(u32 addr)
 
 u16 ARM7Read16(u32 addr)
 {
+    addr &= ~0x1;
+
     if (addr < 0x00004000)
     {
         if (ARM7->R[15] >= 0x00004000)
@@ -2548,6 +2560,8 @@ u16 ARM7Read16(u32 addr)
 
 u32 ARM7Read32(u32 addr)
 {
+    addr &= ~0x3;
+
     if (addr < 0x00004000)
     {
         if (ARM7->R[15] >= 0x00004000)
@@ -2682,6 +2696,8 @@ void ARM7Write8(u32 addr, u8 val)
 
 void ARM7Write16(u32 addr, u16 val)
 {
+    addr &= ~0x1;
+
     switch (addr & 0xFF800000)
     {
     case 0x02000000:
@@ -2760,6 +2776,8 @@ void ARM7Write16(u32 addr, u16 val)
 
 void ARM7Write32(u32 addr, u32 val)
 {
+    addr &= ~0x3;
+
     switch (addr & 0xFF800000)
     {
     case 0x02000000:
