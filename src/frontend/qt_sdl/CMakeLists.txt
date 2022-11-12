@@ -60,11 +60,6 @@ else()
     option(USE_QT6 "Build using Qt 6 instead of 5" OFF)
 endif()
 
-
-if (WIN32)
-    set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -i <SOURCE> -o <OBJECT>")
-endif()
-
 if (USE_QT6)
     find_package(Qt6 COMPONENTS Core Gui Widgets Network Multimedia OpenGL OpenGLWidgets REQUIRED)
     set(QT_LINK_LIBS Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network Qt6::Multimedia Qt6::OpenGL Qt6::OpenGLWidgets)
@@ -157,8 +152,19 @@ if (UNIX)
 elseif (WIN32)
     option(PORTABLE "Make a portable build that looks for its configuration in the current directory" ON)
 
-    configure_file("${CMAKE_SOURCE_DIR}/res/melon.rc.in" "${CMAKE_SOURCE_DIR}/melon.rc")
-    target_sources(melonDS PUBLIC "${CMAKE_SOURCE_DIR}/melon.rc")
+    configure_file("${CMAKE_SOURCE_DIR}/res/melon.rc.in" "${CMAKE_BINARY_DIR}/res/melon.rc")
+    target_sources(melonDS PUBLIC "${CMAKE_BINARY_DIR}/res/melon.rc")
+    target_include_directories(melonDS PRIVATE "${CMAKE_BINARY_DIR}/res")
+
+    if (${ARCHITECTURE} STREQUAL x86_64)
+        set(WIN32_ARCHITECTURE amd64)
+    elseif (${ARCHITECTURE} STREQUAL x86)
+        set(WIN32_ARCHITECTURE x86)
+    elseif (${ARCHITECTURE} MATCHES "ARM(64)?")
+        string(TOLOWER "${ARCHITECTURE}" WIN32_ARCHITECTURE)
+    endif()
+
+    configure_file("${CMAKE_SOURCE_DIR}/res/xp.manifest.in" "${CMAKE_BINARY_DIR}/res/xp.manifest")
 
     target_link_libraries(melonDS PRIVATE ws2_32 iphlpapi)
     set_target_properties(melonDS PROPERTIES LINK_FLAGS_DEBUG "-mconsole")

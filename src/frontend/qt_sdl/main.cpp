@@ -186,7 +186,8 @@ void audioMute()
         break;
 
     case 2: // only currently focused instance
-        if (!mainWindow->isActiveWindow()) audioMuted = true;
+        if (mainWindow != nullptr)
+            audioMuted = !mainWindow->isActiveWindow();
         break;
     }
 }
@@ -3284,6 +3285,9 @@ int main(int argc, char** argv)
     }
 
     SDL_JoystickEventState(SDL_ENABLE);
+    
+    SDL_InitSubSystem(SDL_INIT_VIDEO);
+    SDL_EnableScreenSaver(); SDL_DisableScreenSaver();
 
     Config::Load();
 
