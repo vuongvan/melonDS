@@ -85,6 +85,9 @@ signals:
     void windowFullscreenToggle();
 
     void swapScreensToggle();
+    void screenEmphasisToggle();
+
+    void syncVolumeLevel();
 
 private:
     void drawScreenGL();
@@ -239,6 +242,7 @@ public:
     GL::Context* getOGLContext();
 
     bool preloadROMs(QStringList file, QStringList gbafile, bool boot);
+    QStringList splitArchivePath(const QString& filename, bool useMemberSyntax);
 
     void onAppStateChanged(Qt::ApplicationState state);
 
@@ -330,6 +334,7 @@ private slots:
     void onUpdateVideoSettings(bool glchange);
 
     void onFullscreenToggled();
+    void onScreenEmphasisToggled();
 
 private:
     void closeEvent(QCloseEvent* event);
